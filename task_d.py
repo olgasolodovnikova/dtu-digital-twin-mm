@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     # Create an NLP solver
     prob = {'f': phi, 'x': vertcat(*w), 'g': vertcat(*g_MS)}
-    solver = nlpsol('solver', 'ipopt', prob)
+    solver = nlpsol('solver', 'ipopt', prob, {'ipopt.print_level':0})
 
     # Solve the NLP
     sol = solver(x0=w0, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg)
@@ -185,6 +185,7 @@ if __name__ == '__main__':
 
     ax2 = plt.subplot(2, 2, 2)
     plt.step(T_det*s2h, np.append(D_det, D_det[-1]), where='post')  # Cumulative energy using np.cumsum
+    # plt.plot(T_det*s2h, D)  # Cumulative energy using np.cumsum
     plt.xlabel('Time [h]')
     plt.ylabel('Flow [cm^3]/s')
     plt.title('Inflow (deterministic part)')
