@@ -23,5 +23,7 @@ u0    = [1]          # Valve position [-]
 p = {'A': A, 'a': a, 'g': g, 'rho': rho, 'powCoeff': powCoeff, 'sigma': sigma}
 
 # Simulation parameters
-Nsim = 200           # Number of steps for solvers
+#Nsim = 200           # Number of steps for solvers
+
+Nsim = 10       # Number of steps for solvers
 opts = {'N': Nsim}
