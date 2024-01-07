@@ -25,18 +25,20 @@ if __name__ == '__main__':
     # ----------- Task: choose sequence of valve positions (between 0 and 1) -----------
     # Insert you sequence of value configurations (You need to specify Nd numbers of values)
     u0 = [0.3,0.2,0.2,0.25,0.35,0.4,0.4,0.41,0.48,0.5] # <---- insert here
-    u0 = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ]
+    #u0 = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ]
     u = np.array(u0)
 
     # Initial conditions
     x0 = np.array(x0)
 
     # Numpy matrices for storing data
-    T = np.zeros(Nd*(Nsim))
-    X = np.zeros(Nd*(Nsim))
-    Z = np.zeros(Nd*(Nsim))
-    Y = np.zeros(Nd*(Nsim))
-    D = np.zeros(Nd*(Nsim))
+    T = np.zeros(Nd*(Nsim)) # time
+    X = np.zeros(Nd*(Nsim)) # water mass in tank
+    Z = np.zeros(Nd*(Nsim)) # generated power
+    Y = np.zeros(Nd*(Nsim)) # measured power affected by measurement noise in discrete time 
+    D = np.zeros(Nd*(Nsim)) # disturbance (inlet flow)
+
+    D_det_plot = np.zeros(Nd*(Nsim)) #for plotting expected inflow in fig1
 
     # *** Simulation ***
     # Generate stochastics data solving the system of stochastic differential equations (SDEs).
@@ -66,6 +68,8 @@ if __name__ == '__main__':
         T[start_idx:end_idx] = t[:-1]
         X[start_idx:end_idx] = x[:, :-1]
         D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma*dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
+
+        D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim))
         
         # Generate output sequence (electrical power [W]).
         z = np.zeros((1, Nsim))
@@ -79,19 +83,22 @@ if __name__ == '__main__':
 
     # *** Plot data ***
     
+    # Subplot for disturbances
+    ax2 = plt.subplot(2, 2, 1)
+    plt.plot(T*s2h, D) 
+    plt.plot(T*s2h, D_det_plot, '--', label = 'Predicted inflow')
+    plt.xlabel('Time [h]')
+    plt.ylabel('Flow [m^3]/s')
+    plt.title('Inflow')
+    plt.legend()
+
     # Subplot for Tank water levels
-    ax1 = plt.subplot(2, 2, 1)
+    ax1 = plt.subplot(2, 2, 2)
     plt.plot(T*s2h, X/(rho*A))
     plt.ylabel('Height in tank [m]')
     plt.xlabel('Time [h]')
     plt.title('Dam water levels')
 
-    # Subplot for disturbances
-    ax2 = plt.subplot(2, 2, 2)
-    plt.plot(T*s2h, D)  # Cumulative energy using np.cumsum
-    plt.xlabel('Time [h]')
-    plt.ylabel('Flow [m^3]/s')
-    plt.title('Inflow')
 
     # Subplot for produced power and minimum required power.
     ax3 = plt.subplot(2, 2, 3)
@@ -104,7 +111,7 @@ if __name__ == '__main__':
 
     # Subplot for valve configurations
     ax4 = plt.subplot(2, 2, 4)
-    plt.step(T_det*s2h, np.append(u, u[-1]), where='post')  # Cumulative energy using np.cumsum
+    plt.step(T_det*s2h, np.append(u, u[-1]), where='post')  
     plt.xlabel('Time [h]')
     plt.ylabel('Valve configurations')
     plt.ylim([-0.9, 1.1])
