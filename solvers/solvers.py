@@ -44,8 +44,10 @@ def std_wiener_process(T, N, nW, seed=None):
     if seed is not None:
         np.random.seed(seed)
 
-    dt = T / N
-    dW = np.sqrt(dt) * np.random.randn(nW, N)
+    dt = T / N #kind of a big number for our D_det values
+    print(dt)
+    dW = np.sqrt(np.sqrt(dt)) * np.random.randn(nW, N) # took the sqrt of sqrt(dt)
+    
     Tw = np.arange(0, T + dt, dt)
     W = np.concatenate((np.zeros((nW, 1)), np.cumsum(dW, axis=1)), axis=1)
 
