@@ -45,7 +45,6 @@ def std_wiener_process(T, N, nW, seed=None):
         np.random.seed(seed)
 
     dt = T / N #kind of a big number for our D_det values
-    print(dt)
     dW = np.sqrt(np.sqrt(dt)) * np.random.randn(nW, N) # took the sqrt of sqrt(dt)
     
     Tw = np.arange(0, T + dt, dt)
