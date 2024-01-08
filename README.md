@@ -11,7 +11,7 @@ The exercise consists of two sets of multiple-choice questions:
 - define the key components of a digital twin and identify areas where digital twins can be applied,
 - explain the difference between a digital model, a digital shadow, and a digital twin.​
 
-**Part 2** contains a simulated interaction with a digital twin. You will need to execute and interact with Python scripts from this repository. You can watch an introductory video covering the installation as well as how you can interact with the code. The files can be evaluated using the included `digital_twin_exercise.ipynb` Jupyter notebook, or executed in your preferred Python IDE.
+**Part 2** contains a simulated interaction with a digital twin. You will need to execute and interact with Python scripts from this repository. You can *watch an introductory video* follow the guide below covering the installation as well. The files can be evaluated using the included `digital_twin_exercise.ipynb` Jupyter notebook, or executed in your preferred Python IDE.
 
 ## Installation
 This guide assumes you have a working installation of Python, the [conda](https://docs.conda.io/en/latest/) package manager and git.
@@ -49,6 +49,11 @@ If you wish to use Jupyter notebook, ensure that you activate the kernel for you
 `conda install ipykernel`
 
 `python3 -m ipykernel install --user --name=MyEnv`
+
+You can view and edit the scripts using [vim](https://vim.rtorr.com). 
+
+`vim task_a.py`
+
 
 
 
