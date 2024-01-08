@@ -3,11 +3,11 @@
 #  --- parameters ---
 
 # Model parameters
-A = 300         # m^2
-a = 3.0         # m^2
-g = 0.981       # kg/s^2
-rho = 998       # kg/m^3
-powCoeff = 10.0 # W/(m^3/s)]
+A = 300         # Reservoir area - m^2
+a = 3.0/3.162277660168380  # Outlet area - m^2
+g = 9.81        # Gravitational const. - m/s^2
+rho = 998       # Water density - kg/m^3
+powCoeff = 10.0 # Turbine coefficient W/kg]
 
 sigma = 1    # [m^3/s -> kg]
 nW    = 1    # Number of noise sources --> only 1
