@@ -44,7 +44,7 @@ Run `test.py` or `task_c.py` to see that everything is working.
 
 `python3 task_c.py`
 
-If you wish to use Jupyter notebook, ensure that you activate the kernel for your environment. First install ipykernel (it's bad form to install something after installing from .txt file, so consider adding `ipykernel` to `modules_req.txt`. 
+If you wish to use Jupyter notebook, ensure that you activate the kernel for your environment. First install ipykernel (it's bad form to install something after installing from .txt file, so consider adding `ipykernel` to `modules_req.txt`).
 
 `conda install ipykernel`
 
