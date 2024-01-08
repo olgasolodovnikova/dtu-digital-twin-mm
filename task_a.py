@@ -102,7 +102,7 @@ if __name__ == '__main__':
     energy = np.sum(Z) * dt *conv_unit_energy, #OBS: why not use Y to calculate stochastic power?
     energy_Y = np.sum(Y) * dt *conv_unit_energy
     # Print total electrical energy produced
-    print("Total electrical energy produced after {} hours is {} MWh".format((tf)*s2h, energy))
+    print("Total electrical energy produced after {:.1f} hours is {:.3f} MWh".format((tf)*s2h, energy[0]))
 
     print(f'Deterministic energy: {energy}, stochastic energy: {energy_Y}')
     
