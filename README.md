@@ -32,7 +32,7 @@ Make a designated conda environment for this project.
 
 `conda activate MyEnv`
 
-`conda install modules_req.txt`
+`conda install --file modules_req.txt`
 
 Change to `dtu-digital-twin-mm` directory
 
