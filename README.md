@@ -2,16 +2,16 @@
 
 # What is a Digital Twin?
 
-After completing this exercise, you should be able to
+This test evaluates the learning objectives for the Digital Twin Micro Module. After completing the module, you should be able to
 - interact with a digital twin in order to predict the response of a system and suggest improvements. 
-
-The exercise consists of two sets of multiple-choice questions:
-
-**Part 1** considers general definitions and concepts of digital twins that reinforce the following learning objectives from the micromodule;
 - define the key components of a digital twin and identify areas where digital twins can be applied,
 - explain the difference between a digital model, a digital shadow, and a digital twin.​
 
-**Part 2** contains a simulated interaction with a digital twin. You will need to execute and interact with Python scripts from this repository. You can *watch an introductory video* follow the guide below covering the installation as well. The files can be evaluated using the included `digital_twin_exercise.ipynb` Jupyter notebook, or executed in your preferred Python IDE.
+The test consists of two sets of multiple-choice questions:
+
+**Part 1** considers general definitions and concepts of digital twins that reinforce the following learning objectives from the micromodule.
+
+**Part 2** contains a simulated interaction with a digital twin. You will need to execute and interact with Python scripts, which are available at the github repository (https://github.com/olgasolodovnikova/dtu-digital-twin-mm.git). You can watch an introductory video covering the installation as well as how you can interact with the code. The files can be evaluated using the included `digital_twin_exercise.ipynb` Jupyter notebook, or executed in your preferred Python IDE. 
 
 ## Installation
 This guide assumes you have a working installation of Python, the [conda](https://docs.conda.io/en/latest/) package manager and git.
