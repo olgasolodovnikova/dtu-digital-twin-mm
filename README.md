@@ -2,12 +2,12 @@
 
 # What is a Digital Twin?
 
-This test evaluates the learning objectives for the Digital Twin Micro Module. After completing the module, you should be able to
+This exercise evaluates the learning objectives for the Digital Twin Micro Module. After completing the module, you should be able to
 - interact with a digital twin in order to predict the response of a system and suggest improvements. 
 - define the key components of a digital twin and identify areas where digital twins can be applied,
 - explain the difference between a digital model, a digital shadow, and a digital twin.​
 
-The test consists of two sets of multiple-choice questions:
+The exercise consists of two sets of multiple-choice questions:
 
 **Part 1** considers general definitions and concepts of digital twins that reinforce the following learning objectives from the micromodule.
 
