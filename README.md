@@ -32,11 +32,13 @@ Make a designated conda environment for this project.
 
 `conda activate MyEnv`
 
-`conda install --file modules_req.txt`
-
 Change to `dtu-digital-twin-mm` directory
 
 `cd dtu-digital-twin-mm`
+
+Install modules from .txt file
+
+`conda install --file modules_req.txt`
 
 Run `test.py` or `task_c.py` to see that everything is working. 
 
