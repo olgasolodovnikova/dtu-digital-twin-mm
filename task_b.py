@@ -13,19 +13,24 @@ from data.Parameters import *
 from data.Deterministic_dist_profile import *
 from data.Power_goal import *
 
- # Convert Ws to MWh
-conv_unit_energy = 2.7778e-10
-
-# Convert seconds to hours
-s2h              = 1/(60*60)
-
-
 if __name__ == '__main__':
 
     # ----------- Task: choose sequence of valve positions (between 0 and 1) -----------
     # Insert you sequence of value configurations (You need to specify Nd numbers of values)
-    u0 = [0.3,0.2,0.2,0.25,0.35,0.4,0.4,0.41,0.48,0.5] # <---- insert here
-    #u0 = [1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ]
+    
+    u0 = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1] # <---- insert here
+    
+    # *** Constants ***
+     # Convert Ws to MWh
+    conv_unit_energy = 2.7778e-10
+
+    # Convert seconds to hours
+    s2h              = 1/(60*60)
+
+    # *** Simulation ***
+    # Generate stochastics data solving the system of stochastic differential equations (SDEs).
+    # We split the total simulation into Nd sub-simulations. The inlet flow is constant in each sub-simulation.
+
     u = np.array(u0)
 
     # Initial conditions
@@ -35,21 +40,14 @@ if __name__ == '__main__':
     T = np.zeros(Nd*(Nsim)) # time
     X = np.zeros(Nd*(Nsim)) # water mass in tank
     Z = np.zeros(Nd*(Nsim)) # generated power
-    Y = np.zeros(Nd*(Nsim)) # measured power affected by measurement noise in discrete time 
     D = np.zeros(Nd*(Nsim)) # disturbance (inlet flow)
 
     D_det_plot = np.zeros(Nd*(Nsim)) #for plotting expected inflow in fig1
 
-    # *** Simulation ***
-    # Generate stochastics data solving the system of stochastic differential equations (SDEs).
-    # We split the total simulation into Nd sub-simulations. The inlet flow is constant in each sub-simulation.
 
     # Generate stochastic data from a standard Wiener process
     (W, Tw, dW) = std_wiener_process((tf-t0), (Nsim+1)*Nd, nW, seed)
 
-    # Measurement noise
-    Rk = 100000 # Maybe we need to change this
-    vk = np.sqrt(Rk) * np.random.randn(1, Nd*(Nsim))
     # Set initial state for each sub-simulation
     xk = x0
 
@@ -67,19 +65,16 @@ if __name__ == '__main__':
          # Insert simulation data t and x into the corresponding block in T and X
         T[start_idx:end_idx] = t[:-1]
         X[start_idx:end_idx] = x[:, :-1]
-        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma*dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
-
-        D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim))
         
         # Generate output sequence (electrical power [W]).
         z = np.zeros((1, Nsim))
         for j in range(0, Nsim):
             z[:,j] = output(t[j], x[:, j], u[i], D_det[i], p)
         Z[start_idx:end_idx] = z
-        Y[start_idx:end_idx] = z
-    
-    # Add measurement noise to Y
-    Y =  Y + vk[0]
+
+        # Save deterministic (predected) stochastic (actual) inlet flow 
+        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma*dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
+        D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim))
 
     # *** Plot data ***
     
