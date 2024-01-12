@@ -17,7 +17,7 @@ if __name__ == '__main__':
     # Insert you value for u0
 
     u0 = 1 # <---- substitude with your choice
-    
+
     print(f'Constant valve setting u = {u0}')
     u = np.array(u0)
 
@@ -36,7 +36,6 @@ if __name__ == '__main__':
     T = np.zeros(Nd*(Nsim)) # time
     X = np.zeros(Nd*(Nsim)) # water mass in tank
     Z = np.zeros(Nd*(Nsim)) # generated power
-    Y = np.zeros(Nd*(Nsim)) # measured power affected by measurement noise in discrete time - why not D affected by noise? 
     D = np.zeros(Nd*(Nsim)) # disturbance (inlet flow)
 
     D_det_plot = np.zeros(Nd*(Nsim)) #for plotting expected inflow in fig1
@@ -60,14 +59,8 @@ if __name__ == '__main__':
         start_idx = i * (Nsim)
         end_idx = (i + 1) * (Nsim)
 
-        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma * dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
-
         # Solve the SDE with inflet flow D_det[i] (constant) and with initial condition xk.
         (t, x) = explicitExplicit(driftModel, diffModel, T_det[i], T_det[i+1], xk, u, D_det[i], p, dW[:,i * (Nsim+1):(i + 1) * (Nsim+1)], opts)
-        
-
-        #Solve the SDE with inflet flow D[i] (stochastic) and with initial condition xk.
-        #(t, x) = explicitExplicit(driftModel, diffModel, Tw[i], Tw[i+1], xk, u, D[i], p, dW[:,i * (Nsim+1):(i + 1) * (Nsim+1)], opts)
         
         # Update initial conditions for next sub-simulation
         xk = x[:,-1]
@@ -75,21 +68,16 @@ if __name__ == '__main__':
         # Insert simulation data t and x into the corresponding block in T and X
         T[start_idx:end_idx] = t[:-1]
         X[start_idx:end_idx] = x[:, :-1]
-        #D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
-
-        D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim))
         
         # Generate output sequence (electrical power [W]).
         z = np.zeros((1, Nsim))
         for j in range(0, Nsim):
             z[:,j] = output(t[j], x[:, j], u, D_det[i], p) 
-            #z[:,j] = output(t[j], x[:, j], u, D[i], p) #Use the stochastic inflow
         Z[start_idx:end_idx] = z
-        Y[start_idx:end_idx] = z
 
-    # Add measurement noise to Y
-
-    Y =  Y + vk[0] #OBS: why is it added to Y, not to D? 
+        # Save deterministic (predected) stochastic (actual) inlet flow
+        D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) 
+        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma * dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
     
     # *** Compute the total amount of energy produced ***
     # We use the total simulation data of Z to compute the accumulated power.
@@ -98,13 +86,10 @@ if __name__ == '__main__':
     dt = T[1] - T[0]
 
     # Sum all simulation data in Z and multiply by the time-interval. We convert the result from Ws to MWh
-    energy = np.sum(Z) * dt *conv_unit_energy, #OBS: why not use Y to calculate stochastic power?
-    energy_Y = np.sum(Y) * dt *conv_unit_energy
-    # Print total electrical energy produced
-    print("Total electrical energy produced after {:.1f} hours is {:.3f} MWh".format((tf)*s2h, energy[0]))
+    energy = np.sum(Z) * dt *conv_unit_energy
 
-    print(f'Deterministic energy: {energy}, stochastic energy: {energy_Y}')
-    
+    # Print total electrical energy produced
+    print("Total electrical energy produced after {:.1f} hours is {:.3f} MWh".format((tf)*s2h, energy))    
 
     # *** Plot data ***
     plt.figure(1)
@@ -125,11 +110,9 @@ if __name__ == '__main__':
     plt.xlabel('Time [h]')
     plt.title('Dam water levels')
 
-    
-
     # Subplot for electrical power
     ax3 = plt.subplot(2, 2, 3)
-    plt.plot(T*s2h, Y/1e6) #scale to MW
+    plt.plot(T*s2h, Z/1e6) #scale to MW
     plt.xlabel('Time [h]')
     plt.ylabel('Power [MW]')
     plt.title(r'Generated power $z(t_k)$')
