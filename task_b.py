@@ -19,7 +19,7 @@ if __name__ == '__main__':
     # Insert you sequence of value configurations (You need to specify Nd numbers of values)
     
     u0 = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1] # <---- insert here
-    
+
     # *** Constants ***
      # Convert Ws to MWh
     conv_unit_energy = 2.7778e-10
@@ -77,11 +77,14 @@ if __name__ == '__main__':
         D_det_plot[start_idx:end_idx] = np.tile(D_det[i], (Nsim))
 
     # *** Plot data ***
-    
+    print("\nSequence of valve configurations: ", u)
+    print("Sequence of water levels:         ", np.round(X[0:10:]/(rho*A),2))
+    Zseg = np.max(np.reshape(Z,(Nd,Nsim)),axis=1)
+    print("Power requirement satisfied:      ",all(np.greater(Zseg,power_goal)))
     # Subplot for disturbances
     ax2 = plt.subplot(2, 2, 1)
-    plt.plot(T*s2h, D) 
-    plt.plot(T*s2h, D_det_plot, '--', label = 'Predicted inflow')
+    plt.plot(T*s2h, D, label = 'Measured') 
+    plt.plot(T*s2h, D_det_plot, '--', label = 'Predicted')
     plt.xlabel('Time [h]')
     plt.ylabel('Flow [m^3]/s')
     plt.title('Inflow')
@@ -97,10 +100,10 @@ if __name__ == '__main__':
 
     # Subplot for produced power and minimum required power.
     ax3 = plt.subplot(2, 2, 3)
-    plt.plot(T*s2h, Z, label='Produced')
-    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1]), where='post', label='Min.')
+    plt.plot(T*s2h, Z/1e3, label='Produced')
+    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3,'--', where='post', label='Min.')
     plt.xlabel('Time [h]')
-    plt.ylabel('Power [W]')
+    plt.ylabel('Power [kW]')
     plt.title('Power from flow')
     ax3.legend()
 
@@ -109,7 +112,7 @@ if __name__ == '__main__':
     plt.step(T_det*s2h, np.append(u, u[-1]), where='post')  
     plt.xlabel('Time [h]')
     plt.ylabel('Valve configurations')
-    plt.ylim([-0.9, 1.1])
+    plt.ylim([-0.1, 1.1])
     plt.title('Input sequence')
 
 
