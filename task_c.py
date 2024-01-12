@@ -78,8 +78,6 @@ if __name__ == '__main__':
 
     # Evaluate at a test point
     Fk = F(x0=[x0[0]], u = u0[0], d = D_det[0])
-    print(Fk['xf'])
-
     
     # Start with an empty NLP
     w   = []
@@ -107,9 +105,7 @@ if __name__ == '__main__':
         ubw += [1]
         w0  += [u0[0]]
 
-        # Slack variable
-        
-       # New NLP variable for slack variable
+        # New NLP variable for slack variable
         Sk = MX.sym('S_' + str(k))
         w   += [Sk]
         lbw += [0]  # Slack variable is non-negative
@@ -133,10 +129,14 @@ if __name__ == '__main__':
 
         # Conversion of outlet flow to power
         Zk =  powCoeff*qout
-        Zk_bar = power_goal[k]
+        if k > 0: 
+            Zk_bar = np.max(power_goal[k-1:k+1])
+        else:
+            Zk_bar = power_goal[k]
 
         phi = phi + Qu*Uk + Qs * Sk - Qz*Zk
         Uold = Uk
+
         # New NLP variable for state at end of interval
         Xk = MX.sym('X_' + str(k+1), 1)
         w   += [Xk]
@@ -149,10 +149,11 @@ if __name__ == '__main__':
         lbg += [0]
         ubg += [0]
 
-    # Add inequality constraint: Zk - Zk_bar >= -Sk
+        # Add inequality constraint: Zk - Zk_bar >= -Sk
+        tolerance = 1000 # Upper tolerance
         g_MS += [Zk - Zk_bar]
         lbg   += [0]
-        ubg   += [inf]  # Zk - Zk_bar >= -Sk
+        ubg   += [tolerance]  # Zk - Zk_bar >= -Sk
 
     # Create an NLP solver
     prob = {'f': phi, 'x': vertcat(*w), 'g': vertcat(*g_MS)}
@@ -162,19 +163,19 @@ if __name__ == '__main__':
     sol = solver(x0=w0, lbx=lbw, ubx=ubw, lbg=lbg, ubg=ubg)
     w_opt = sol['x'].full().flatten()
 
-    # Plot the solution
-
+    # Collect output parameters
     x_opt = np.array(w_opt[0::3])
     u_opt = np.array(w_opt[1::3])
-    #Pslack_opt = np.array(w_opt[2::3])
-    print("The sequence of valve configurations are: ", u_opt)
-    print("The sequence of water levels are: ", x_opt/(rho*A))
-    # Generate output sequence
+    u_opt = np.ceil(u_opt*100)/100 # Round up to 2 decimals
+
     Z = np.zeros((1, N))
     for i in range(0, N):
         Z[:, i] = output(0, x_opt[i], u_opt[i], D_det[i], p)
 
-
+    # Print output
+    print("\nSequence of valve configurations: ", u_opt)
+    print("Sequence of water levels:         ", np.round(x_opt/(rho*A),2))
+    print("Power requirement satisfied:      ",all(np.greater(Z[0, :],power_goal)))
 
     plt.figure(1)
     ax1 = plt.subplot(2, 2, 1)
@@ -195,6 +196,7 @@ if __name__ == '__main__':
     plt.step(T_det*s2h, np.append(power_goal, power_goal[-1]), where='post', label='Min.')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [W]')
+    # plt.xlim([9.01,10])
     plt.title('Power from flow')
     ax3.legend()
 
