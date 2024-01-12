@@ -47,10 +47,6 @@ if __name__ == '__main__':
     # Generate stochastic data from a standard Wiener process
     (W, Tw, dW) = std_wiener_process((tf-t0), (Nsim+1)*Nd, nW, seed) 
 
-    # Measurement noise
-    Rk = 100000 # OBS: Maybe we need to change this
-    
-    vk = np.sqrt(Rk) * np.random.randn(1, Nd*(Nsim))
     # Set initial state for each sub-simulation
     xk = x0
     for i in range(0, Nd):
