@@ -1,7 +1,5 @@
 ######################################################################
-# Task d:
-# Economic optimal control
-#
+# Task c:
 # 18-12-2023
 ################################
 import numpy as np
@@ -14,14 +12,11 @@ from data.Parameters import *
 from data.Deterministic_dist_profile import *
 from data.Power_goal import *
 
- # Convert Ws to MWh
-conv_unit_energy = 2.7778e-10
-# Convert seconds to hours
-s2h              = 1/(60*60)
-
 if __name__ == '__main__':
-    
-   
+     # Convert Ws to MWh
+    conv_unit_energy = 2.7778e-10
+    # Convert seconds to hours
+    s2h              = 1/(60*60)
 
     # Parameters
     A   = p['A']
@@ -36,8 +31,6 @@ if __name__ == '__main__':
     x = MX.sym('x')
     u = MX.sym('u')
     d = MX.sym('d')
-
-    # Model equations
     
     # Inlet flow is the disturbance
     qin = d
@@ -177,35 +170,36 @@ if __name__ == '__main__':
     print("Sequence of water levels:         ", np.round(x_opt/(rho*A),2))
     print("Power requirement satisfied:      ",all(np.greater(Z[0, :],power_goal)))
 
+    # *** Plot data ***
     plt.figure(1)
-    ax1 = plt.subplot(2, 2, 1)
-    plt.plot(T_det*s2h, x_opt/(rho*A))
+    ax1 = plt.subplot(2, 2, 2)
+    plt.plot(T_det*s2h, x_opt/(rho*A),'r--')
     plt.xlabel('Time [h]')
-    plt.ylabel('Height in tank [m]')
-    plt.title('Dam water levels')
+    plt.ylabel('Height [m]')
+    plt.title('Predicted water level')
 
-    ax2 = plt.subplot(2, 2, 2)
-    plt.step(T_det*s2h, np.append(D_det, D_det[-1]), where='post')  # Cumulative energy using np.cumsum
+    ax2 = plt.subplot(2, 2, 1)
+    plt.step(T_det*s2h, np.append(D_det, D_det[-1]),'r--', where='post')  # Cumulative energy using np.cumsum
     # plt.plot(T_det*s2h, D)  # Cumulative energy using np.cumsum
     plt.xlabel('Time [h]')
-    plt.ylabel('Flow [cm^3]/s')
-    plt.title('Inflow (deterministic part)')
+    plt.ylabel('Flow [m$^3$/s]')
+    plt.title('Predicted inflow')
 
     ax3 = plt.subplot(2, 2, 3)
-    plt.plot(T_det*s2h, np.append(Z[0, :], Z[0, -1]),label='Produced')
-    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1]), where='post', label='Min.')
+    plt.plot(T_det*s2h, np.append(Z[0, :], Z[0, -1])/1e3,'r--',label='Predicted')
+    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b-.',where='post', label='Required')
     plt.xlabel('Time [h]')
-    plt.ylabel('Power [W]')
+    plt.ylabel('Power [kW]')
     # plt.xlim([9.01,10])
-    plt.title('Power from flow')
+    plt.title('Generated power')
     ax3.legend()
 
     ax4 = plt.subplot(2, 2, 4)
-    plt.step(T_det*s2h, np.append(u_opt, u_opt[-1]), where='post')
+    plt.step(T_det*s2h, np.append(u_opt, u_opt[-1]),'k', where='post')
     plt.xlabel('Time [h]')
-    plt.ylabel('Valve configurations')
-    plt.ylim([-0.9, 1.1])
-    plt.title('Input sequence')
+    plt.ylabel('Valve configuration [-]')
+    plt.ylim([-0.1, 1.1])
+    plt.title('Input sequence $u(t_k)$')
     # Adjust layout for better spacing
     plt.tight_layout()
     plt.show()

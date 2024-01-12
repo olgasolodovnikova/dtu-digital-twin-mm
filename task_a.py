@@ -1,7 +1,5 @@
 ######################################################################
-# Task 1: Electricity production 
-# What the the maximum amount of power generated for a given inflow profile?
-#
+# Task a:
 # 08-11-2023
 ################################
 import numpy as np
@@ -16,9 +14,9 @@ if __name__ == '__main__':
     # *** Valve settings ***
     # Insert you value for u0
 
-    u0 = 1 # <---- substitude with your choice
+    u0 = .5 # <---- substitude with your choice
 
-    print(f'Constant valve setting u = {u0}')
+    print(f'\nConstant valve setting u = {u0}')
     u = np.array(u0)
 
     # *** Constants ***
@@ -85,41 +83,41 @@ if __name__ == '__main__':
     energy = np.sum(Z) * dt *conv_unit_energy
 
     # Print total electrical energy produced
-    print("Total electrical energy produced after {:.1f} hours is {:.3f} MWh".format((tf)*s2h, energy))    
+    print("Total electrical energy produced after {:.1f} hours: {:.3f} MWh".format((tf)*s2h, energy))    
 
     # *** Plot data ***
     plt.figure(1)
 
     # Subplot for disturbances
     ax2 = plt.subplot(2, 2, 1)
-    plt.plot(T*s2h, D) 
-    plt.plot(T*s2h, D_det_plot, '--', label ='Predicted inflow')
+    plt.plot(T*s2h, D,'k', label = 'Measured') 
+    plt.plot(T*s2h, D_det_plot, 'r--', label ='Predicted')
     plt.xlabel('Time [h]')
-    plt.ylabel('Flow [m^3/s]')
+    plt.ylabel('Flow [ m$^3$/s]')
     plt.title('Inflow')
     plt.legend()
 
     # Subplot for Tank water levels
     ax1 = plt.subplot(2, 2, 2)
-    plt.plot(T*s2h, X/(rho*A))
-    plt.ylabel('Height in tank [m]')
+    plt.plot(T*s2h, X/(rho*A),'k')
+    plt.ylabel('Height [m]')
     plt.xlabel('Time [h]')
-    plt.title('Dam water levels')
+    plt.title('Dam water level  $h(t_k)$')
 
     # Subplot for electrical power
     ax3 = plt.subplot(2, 2, 3)
-    plt.plot(T*s2h, Z/1e6) #scale to MW
+    plt.plot(T*s2h, Z/1e6,'k')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [MW]')
     plt.title(r'Generated power $z(t_k)$')
 
     # Subplot for accumulated energy
     ax4 = plt.subplot(2, 2, 4)
-    plt.plot(T*s2h, np.cumsum(Z) * dt *conv_unit_energy,label='Sum')  # Cumulative energy using np.cumsum
-    plt.axhline(y=energy, color='r', linestyle='--', label='Total produced energy')
+    plt.plot(T*s2h, np.cumsum(Z) * dt *conv_unit_energy,'k')
+    # plt.axhline(y=energy, color='r', linestyle='--')
+    # plt.text(.5,energy*0.86,'Total production',color = 'r')
     plt.xlabel('Time [h]')
     plt.ylabel('Energy [MWh]')
-    ax4.legend(loc='lower left')
     plt.title('Energy production')
 
     # Adjust layout for better spacing
