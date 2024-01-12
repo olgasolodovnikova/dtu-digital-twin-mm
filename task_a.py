@@ -61,7 +61,7 @@ if __name__ == '__main__':
         start_idx = i * (Nsim)
         end_idx = (i + 1) * (Nsim)
 
-        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
+        D[start_idx:end_idx] = np.tile(D_det[i], (Nsim)) + sigma * dW[:,i * (Nsim):(i + 1) * (Nsim)][0]
 
         # Solve the SDE with inflet flow D_det[i] (constant) and with initial condition xk.
         (t, x) = explicitExplicit(driftModel, diffModel, T_det[i], T_det[i+1], xk, u, D_det[i], p, dW[:,i * (Nsim+1):(i + 1) * (Nsim+1)], opts)
