@@ -3,13 +3,13 @@
 #  --- parameters ---
 
 # Model parameters
-A = 15000         # Reservoir area - m^2
-a = 3.0/3.162277660168380  # Outlet area - m^2
-g = 9.81        # Gravitational const. - m/s^2
-rho = 998       # Water density - kg/m^3
-powCoeff = 10.0 # Turbine coefficient W/kg]
+A = 20000         # Reservoir area [m^2]
+a = 3.0/3.162277660168380  # Outlet area [m^2]
+g = 9.81        # Gravitational const [m/s^2]
+rho = 998       # Water density [kg/m^3]
+powCoeff = 10.0 # Turbine coefficient [W/kg]
 
-sigma = .0    # [m^3/s -> kg]
+sigma = .05    # Scaling of stochastic noise on inflow
 nW    = 1    # Number of noise sources --> only 1
 seed  = 12   # Seed for random number generator
 

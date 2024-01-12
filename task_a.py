@@ -12,22 +12,21 @@ from solvers.solvers import *
 from data.Parameters import *
 from data.Deterministic_dist_profile import *
 
-# *** Constants ***
-
-# Convert Ws to MWh
-conv_unit_energy = 2.7778e-10
-
-# Convert seconds to hours
-s2h              = 1/(60*60)
-
-
 if __name__ == '__main__':
-
     # *** Valve settings ***
     # Insert you value for u0
-    u0 = 0.5 # <---- substitude with your choice
+
+    u0 = 1 # <---- substitude with your choice
+    
     print(f'Constant valve setting u = {u0}')
     u = np.array(u0)
+
+    # *** Constants ***
+    # Convert Ws to MWh
+    conv_unit_energy = 2.7778e-10
+
+    # Convert seconds to hours
+    s2h              = 1/(60*60)
 
     # *** Simulation data ***
     # Initial conditions
