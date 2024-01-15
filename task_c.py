@@ -122,12 +122,8 @@ if __name__ == '__main__':
 
         # Conversion of outlet flow to power
         Zk =  powCoeff*qout
-        if k > 0: 
-            Zk_bar = np.max(power_goal[k-1:k+1])
-        else:
-            Zk_bar = power_goal[k]
-
-        phi = phi + Qu*Uk + Qs * Sk - Qz*Zk
+        Zk_bar = power_goal[k]
+        phi = phi + Qu*Uk + Qs * Sk + Qz*Zk
         Uold = Uk
 
         # New NLP variable for state at end of interval
@@ -142,9 +138,11 @@ if __name__ == '__main__':
         lbg += [0]
         ubg += [0]
 
+        buffer = 0 # <-- Update this to increase power (input in W)
+
         # Add inequality constraint: Zk - Zk_bar >= -Sk
-        tolerance = 1000 # Upper tolerance
-        g_MS += [Zk - Zk_bar]
+        tolerance = inf # Upper tolerance
+        g_MS += [Zk - (Zk_bar+buffer)]
         lbg   += [0]
         ubg   += [tolerance]  # Zk - Zk_bar >= -Sk
 
@@ -187,7 +185,7 @@ if __name__ == '__main__':
 
     ax3 = plt.subplot(2, 2, 3)
     plt.plot(T_det*s2h, np.append(Z[0, :], Z[0, -1])/1e3,'r--',label='Predicted')
-    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b-.',where='post', label='Required')
+    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b.',where='post', label='Required')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [kW]')
     # plt.xlim([9.01,10])
@@ -200,6 +198,7 @@ if __name__ == '__main__':
     plt.ylabel('Valve configuration [-]')
     plt.ylim([-0.1, 1.1])
     plt.title('Input sequence $u(t_k)$')
+
     # Adjust layout for better spacing
     plt.tight_layout()
     plt.show()

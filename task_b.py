@@ -16,7 +16,7 @@ if __name__ == '__main__':
     # Insert you sequence of value configurations (You need to specify Nd = 10 values)
     
     u0 = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1] # <---- insert here
-    u0  = [0.28, 0.44, 0.67, 0.67 ,0.6,  0.76, 0.93, 0.94 ,0.91 ,0.93]
+
     # *** Constants ***
      # Convert Ws to MWh
     conv_unit_energy = 2.7778e-10
@@ -73,9 +73,9 @@ if __name__ == '__main__':
     
     # Print output
     print("\nSequence of valve configurations: ", u)
-    print("Sequence of water levels:         ", np.round(X[0:10:]/(rho*A),2))
-    print("Power requirement satisfied:      ",all(np.greater(np.max(np.reshape(Z,(Nd,Nsim)),axis=1),power_goal)))
-
+    print("Sequence of water levels:         ", np.round(X[0::Nsim]/(rho*A),2))
+    print("Power requirement satisfied:      ",all(Z[0::Nsim]-power_goal>=0))
+ 
     # *** Plot data ***
     plt.figure(1)
 
@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # Subplot for electrical power
     ax3 = plt.subplot(2, 2, 3)
     plt.plot(T*s2h, Z/1e3, 'k',label='Measured')
-    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3,'-.b', where='post', label='Required')
+    plt.plot(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3,'.b', label='Required')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [kW]')
     plt.title('Generated power $z(t_k)$')
