@@ -184,8 +184,10 @@ if __name__ == '__main__':
     plt.title('Predicted inflow')
 
     ax3 = plt.subplot(2, 2, 3)
+    
+    #plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b--.',where='post', label='Required')
+    plt.plot(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b.',linestyle='dotted', label='Required')
     plt.plot(T_det*s2h, np.append(Z[0, :], Z[0, -1])/1e3,'r--',label='Predicted')
-    plt.step(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3, 'b.',where='post', label='Required')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [kW]')
     # plt.xlim([9.01,10])

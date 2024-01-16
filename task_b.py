@@ -98,7 +98,7 @@ if __name__ == '__main__':
     # Subplot for electrical power
     ax3 = plt.subplot(2, 2, 3)
     plt.plot(T*s2h, Z/1e3, 'k',label='Measured')
-    plt.plot(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3,'.b', label='Required')
+    plt.plot(T_det*s2h, np.append(power_goal, power_goal[-1])/1e3,'.--b', label='Required')
     plt.xlabel('Time [h]')
     plt.ylabel('Power [kW]')
     plt.title('Generated power $z(t_k)$')
