@@ -16,7 +16,7 @@ This guide assumes you have a working installation of Python, the [conda](https:
 
 To clone the repository, copy the https url link of the repository (see green code button). 
 
-1. Using the terminal, navigate to the directory you want to clone the repository to.
+1. Using the terminal (for Windows users, try the Anaconda prompt), navigate to the directory you want to clone the repository to.
 
 `$ cd Desktop`
 
